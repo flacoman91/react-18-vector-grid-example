@@ -202,13 +202,7 @@ export const VectorGrid = () => {
                 },
                 type: 'protobuf',
                 vectorTileLayerStyles: vectorTileStyling,
-                apikey: 'gCZXZglvRQa6sB2z7JzL1w',
-                mouseover: (e) => {
-                    console.log(e);
-                },
-                click: (e) => {
-                    console.log(e, 'clicked');
-                },
+                apikey: 'gCZXZglvRQa6sB2z7JzL1w'
             };
 
             return L.vectorGrid.protobuf(nextzenTilesUrl, options)
