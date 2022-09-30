@@ -203,12 +203,26 @@ export const VectorGrid = () => {
                 type: 'protobuf',
                 vectorTileLayerStyles: vectorTileStyling,
                 apikey: 'gCZXZglvRQa6sB2z7JzL1w',
+                mouseover: (e) => {
+                    console.log(e);
+                },
+                click: (e) => {
+                    console.log(e, 'clicked');
+                },
             };
 
             return L.vectorGrid.protobuf(nextzenTilesUrl, options)
         },
         [nextzenTilesUrl, vectorTileStyling]
     );
+
+    vectorGrid.on('click', function (e) {
+        console.log('clicked', e)
+    });
+    
+    vectorGrid.on('mouseover', function (e) {
+        console.log('mouseover', e)
+    });
 
     useEffect(() => {
         map.addLayer(vectorGrid);
