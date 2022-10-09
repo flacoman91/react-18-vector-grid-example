@@ -1,20 +1,39 @@
+//TODO: THIS FILE SUCKS
+//refactor to make it actually good code... also...
+//  mimic original Leaflet.VectorGrid that has a parent "VectorGrid" which is a abstract interface for two
+//  implementing child classes: "Slicer" and "Protobuf". See https://leaflet.github.io/Leaflet.VectorGrid/vectorgrid-api-docs.html#styling-vectorgrids
+//  for example api... doesn't have to be exactly like that, but something that is as easy as that.
+//  Here's two options (might be others):
+//  1: <SlicerGrid> and <ProtobufGrid> are just separate components that "import {VectorGrid}" in their source files??
+//  2: <VectorGrid> take a prop that determines which type it is
+
 import {useEffect, useMemo} from 'react';
-import {useLeafletContext} from '@react-leaflet/core';
+//import {useLeafletContext} from '@react-leaflet/core';
+import {useMap} from 'react-leaflet'
 import L from 'leaflet';
 import 'leaflet.vectorgrid';
 
-export const VectorGrid = () => {
-    const context = useLeafletContext();
-    const {map} = context;
+export const VectorGrid = ({geoJson}) => {
+    //const context = useLeafletContext();
+    //const {map} = context;
+    const map = useMap();
     const vectorTileStyling = useMemo(() => {
         return {
+            sliced: {
+                fill: true,
+                weight: 1,
+                fillColor: '#06cccc',
+                color: '#06cccc',
+                fillOpacity: 0.2,
+                opacity: 0.4
+            },
             water: {
                 fill: true,
                 weight: 1,
                 fillColor: '#06cccc',
                 color: '#06cccc',
                 fillOpacity: 0.2,
-                opacity: 0.4,
+                opacity: 0.4
             },
             admin: {
                 weight: 1,
@@ -191,6 +210,7 @@ export const VectorGrid = () => {
             const options = {
                 rendererFactory: L.svg.tile,
                 interactive: true,
+                /*
                 style: {
                     weight: 0.5,
                     opacity: 1,
@@ -200,7 +220,8 @@ export const VectorGrid = () => {
                     fill: true,
                     stroke: true
                 },
-                type: 'protobuf',
+                */
+                //type: 'protobuf',
                 vectorTileLayerStyles: vectorTileStyling,
                 apikey: 'gCZXZglvRQa6sB2z7JzL1w'
             };
@@ -217,13 +238,56 @@ export const VectorGrid = () => {
     vectorGrid.on('mouseover', function (e) {
         console.log('mouseover', e)
     });
+    
+    
+    const slicedOptions = {
+        //vector grid options
+        redererFActory: L.svg.tile,
+        interactive: true,
+        vectorTileLayerStyles: {
+            sliced: {
+                fill: true,
+                weight: 1,
+                fillColor: '#06cccc',
+                color: '#06cccc',
+                fillOpacity: 0.2,
+                opacity: 0.4
+            }},
+        //slicer options
+        vectorTileLayerName: 'sliced',
+        //geojson-vt options.
+        maxZoom: 14,  // max zoom to preserve detail on; can't be higher than 24
+        tolerance: 3, // simplification tolerance (higher means simpler)
+        extent: 4096, // tile extent (both width and height)
+        buffer: 64,   // tile buffer on each side
+        debug: 0,     // logging level (0 to disable, 1 or 2)
+        lineMetrics: false, // whether to enable line metrics tracking for LineString/MultiLineString features
+        promoteId: null,    // name of a feature property to promote to feature.id. Cannot be used with `generateId`
+        generateId: false,  // whether to generate feature ids. Cannot be used with `promoteId`
+        indexMaxZoom: 5,       // max zoom in the initial tile index
+        indexMaxPoints: 100000 // max number of points per tile in the index
+    }
 
+    //console.log(geoJson);
+    const slicerVectorGrid = L.vectorGrid.slicer(geoJson, slicedOptions);
+    
+    /*
+    //add vectorGrid to map
     useEffect(() => {
         map.addLayer(vectorGrid);
         return () => {
             map.removeLayer(vectorGrid);
         };
     }, [map, vectorGrid]);
+    */
+    
+    //add vectorGrid to map
+    useEffect(() => {
+        map.addLayer(slicerVectorGrid);
+        return () => {
+            map.removeLayer(slicerVectorGrid);
+        };
+    }, [map, slicerVectorGrid]);
 
     return null;
 };
