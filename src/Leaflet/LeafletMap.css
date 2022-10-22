@@ -1,6 +1,6 @@
 .results-map-container, .leaflet-container {
-  height: 500px;
-  width: 500px;
+  height: 800px;
+  width: 1000px;
   position: relative;
   border: solid 5px
 }

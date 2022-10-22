@@ -2,10 +2,18 @@ import {useEffect, useMemo} from 'react';
 import {useLeafletContext} from '@react-leaflet/core';
 import L from 'leaflet';
 import 'leaflet.vectorgrid';
+import {useSelector} from "react-redux";
+import {
+    selectCounterMapType,
+} from "../features/counter/counterSlice";
 
 export const VectorGrid = () => {
+    const mapType = useSelector(selectCounterMapType);
     const context = useLeafletContext();
     const {map} = context;
+    const mapboxUrl = "https://{s}.tiles.mapbox.com/v4/mapbox.mapbox-streets-v6/{z}/{x}/{y}.vector.pbf?access_token={token}";
+    const nextzenTilesUrl = "https://tile.nextzen.org/tilezen/vector/v1/512/all/{z}/{x}/{y}.mvt?api_key={apikey}";
+    const providerUrl = mapType === 'mapbox' ? mapboxUrl : nextzenTilesUrl;
     const vectorTileStyling = useMemo(() => {
         return {
             water: {
@@ -184,7 +192,6 @@ export const VectorGrid = () => {
     }, []);
 
     // Assumes layers = "all", and format = "mvt"
-    const nextzenTilesUrl = "https://tile.nextzen.org/tilezen/vector/v1/512/all/{z}/{x}/{y}.mvt?api_key={apikey}";
 
     const vectorGrid = useMemo(
         () => {
@@ -193,12 +200,13 @@ export const VectorGrid = () => {
                 interactive: true,
                 type: 'protobuf',
                 vectorTileLayerStyles: vectorTileStyling,
-                apikey: 'gCZXZglvRQa6sB2z7JzL1w'
+                apikey: 'gCZXZglvRQa6sB2z7JzL1w', // nextzen key
+                token: 'pk.eyJ1IjoiZmxhY29tYW45MSIsImEiOiJjbDlqYWJucGcwYmd2M3BtZzltdTIxMTY2In0.t6RJsBKg1cJbnELBUQs6PA' // mapbox key
             };
 
-            return L.vectorGrid.protobuf(nextzenTilesUrl, options)
+            return L.vectorGrid.protobuf(providerUrl, options)
         },
-        [nextzenTilesUrl, vectorTileStyling]
+        [providerUrl, vectorTileStyling]
     );
 
     vectorGrid.on('click', function (e) {
