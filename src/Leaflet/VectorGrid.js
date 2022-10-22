@@ -191,15 +191,6 @@ export const VectorGrid = () => {
             const options = {
                 rendererFactory: L.svg.tile,
                 interactive: true,
-                style: {
-                    weight: 0.5,
-                    opacity: 1,
-                    color: '#ccc',
-                    fillColor: '#390870',
-                    fillOpacity: 0.6,
-                    fill: true,
-                    stroke: true
-                },
                 type: 'protobuf',
                 vectorTileLayerStyles: vectorTileStyling,
                 apikey: 'gCZXZglvRQa6sB2z7JzL1w'
