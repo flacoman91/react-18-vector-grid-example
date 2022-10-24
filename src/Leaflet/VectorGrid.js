@@ -208,7 +208,8 @@ export const VectorGrid = () => {
                 type: 'protobuf',
                 vectorTileLayerStyles: vectorTileStyling,
                 apikey: 'gCZXZglvRQa6sB2z7JzL1w', // nextzen key
-                token: 'pk.eyJ1IjoiZmxhY29tYW45MSIsImEiOiJjbDlqYWJucGcwYmd2M3BtZzltdTIxMTY2In0.t6RJsBKg1cJbnELBUQs6PA' // mapbox key
+                // mapbox key only good for localhost:3000, localhost
+                token: 'pk.eyJ1IjoiZmxhY29tYW45MSIsImEiOiJjbDlqYWJucGcwYmd2M3BtZzltdTIxMTY2In0.t6RJsBKg1cJbnELBUQs6PA'
             };
 
             return L.vectorGrid.protobuf(providerUrl, options)
